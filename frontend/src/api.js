@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-const api = axios.get('https://adb9fb79-e283-41e7-8fae-33b859522126-00-3ufo6kw5zpcff.sisko.replit.dev/api/cadreRecords')
-
+const api = axios.get('https://tasma-production.up.railway.app/cadre-records')
 
 // Add a request interceptor to include the token in the headers
 api.interceptors.request.use(
