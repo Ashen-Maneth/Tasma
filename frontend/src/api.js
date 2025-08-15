@@ -1,11 +1,15 @@
+// frontend/src/api.js
 import axios from 'axios';
 
-const api = axios.get('https://tasma-production.up.railway.app/cadre-records')
+// Create an axios instance with base URL
+const api = axios.create({
+  baseURL: 'https://tasma-production.up.railway.app',
+});
 
-// Add a request interceptor to include the token in the headers
+// Add a request interceptor to include the token in headers
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token'); // Assuming token is stored in localStorage
     if (token) {
       config.headers['x-auth-token'] = token;
     }
