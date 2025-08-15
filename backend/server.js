@@ -27,14 +27,10 @@ app.use('/auth', authRouter);
 
 // =================DEPLOYMENT=================
 // Serve static assets if in production
-if (process.env.NODE_ENV === 'production') {
-  // Set static folder
-  app.use(express.static(path.join(__dirname, '..', 'frontend', 'build')));
-
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '..', 'frontend', 'build', 'index.html'));
-  });
-}
+app.use(cors({
+  origin: 'https://tasma-six.vercel.app', // Your frontend URL
+  credentials: true,
+}));
 // =================DEPLOYMENT=================
 
 app.listen(port, () => {
