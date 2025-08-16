@@ -9,7 +9,8 @@ function auth(role) {
         }
 
         try {
-            const decoded = jwt.verify(token, 'your_jwt_secret');
+            const secret = process.env.JWT_SECRET || 'your_jwt_secret';
+            const decoded = jwt.verify(token, secret);
             req.user = decoded.user;
 
             if (role && req.user.role !== role) {

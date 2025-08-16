@@ -53,7 +53,7 @@ router.route('/login').post(async (req, res) => {
 
         jwt.sign(
             payload,
-            'your_jwt_secret', // Replace with a secret from environment variables
+            process.env.JWT_SECRET || 'your_jwt_secret', // Use env secret in prod
             { expiresIn: 3600 },
             (err, token) => {
                 if (err) throw err;
