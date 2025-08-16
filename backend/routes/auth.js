@@ -68,7 +68,7 @@ router.route('/login').post(async (req, res) => {
 });
 
 // Get all users (protected route)
-router.route('/').get(auth, async (req, res) => {
+router.route('/').get(auth(), async (req, res) => {
     try {
         const users = await User.find();
         res.json(users);
