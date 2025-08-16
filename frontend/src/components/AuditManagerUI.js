@@ -15,6 +15,10 @@ const AuditManagerUI = () => {
     const [consecutiveShortCadre, setConsecutiveShortCadre] = useState([]);
     const [increasingShortCadre, setIncreasingShortCadre] = useState([]);
     const [decreasingRequestCadre, setDecreasingRequestCadre] = useState([]);
+    
+    // New state for detailed view
+    const [selectedRecord, setSelectedRecord] = useState(null);
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         api.get('/cadre-records/')
@@ -75,6 +79,16 @@ const AuditManagerUI = () => {
             default:
                 return false;
         }
+    }
+
+    const handleRowClick = (record) => {
+        setSelectedRecord(record);
+        setShowModal(true);
+    }
+
+    const closeModal = () => {
+        setShowModal(false);
+        setSelectedRecord(null);
     }
 
     return (
@@ -144,11 +158,17 @@ const AuditManagerUI = () => {
                                 </thead>
                                 <tbody>
                                     {filteredRecords.map(record => (
-                                        <tr key={record._id} className={
-                                            isHighlighted(record, 'consecutive') ? 'table-warning' : 
-                                            isHighlighted(record, 'increasing') ? 'table-danger' :
-                                            isHighlighted(record, 'decreasing') ? 'table-info' : ''
-                                        }>
+                                        <tr 
+                                            key={record._id} 
+                                            className={
+                                                isHighlighted(record, 'consecutive') ? 'table-warning' : 
+                                                isHighlighted(record, 'increasing') ? 'table-danger' :
+                                                isHighlighted(record, 'decreasing') ? 'table-info' : ''
+                                            }
+                                            onClick={() => handleRowClick(record)}
+                                            style={{ cursor: 'pointer' }}
+                                            title="Click to view detailed information"
+                                        >
                                             <td>{record.company.company_name}</td>
                                             <td>{new Date(record.date).toLocaleDateString()}</td>
                                             <td>{record.short_cadre}</td>
@@ -189,6 +209,80 @@ const AuditManagerUI = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Modal for detailed view */}
+            {showModal && selectedRecord && (
+                <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                    <div className="modal-dialog modal-lg">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">
+                                    Detailed Cadre Information - {selectedRecord.company.company_name}
+                                </h5>
+                                <button type="button" className="btn-close" onClick={closeModal}></button>
+                            </div>
+                            <div className="modal-body">
+                                <div className="row">
+                                    <div className="col-md-6">
+                                        <div className="card">
+                                            <div className="card-header">
+                                                <h6>Company Information</h6>
+                                            </div>
+                                            <div className="card-body">
+                                                <p><strong>Company:</strong> {selectedRecord.company.company_name}</p>
+                                                <p><strong>Supervisor:</strong> {selectedRecord.company.supervisor_name}</p>
+                                                <p><strong>Date:</strong> {new Date(selectedRecord.date).toLocaleDateString()}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <div className="card">
+                                            <div className="card-header">
+                                                <h6>Cadre Summary</h6>
+                                            </div>
+                                            <div className="card-body">
+                                                <p><strong>Active Cadre:</strong> {selectedRecord.active_cadre}</p>
+                                                <p><strong>Request Cadre:</strong> {selectedRecord.request_cadre}</p>
+                                                <p><strong>Short Cadre:</strong> {selectedRecord.short_cadre}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="row mt-3">
+                                    <div className="col-md-12">
+                                        <div className="card">
+                                            <div className="card-header">
+                                                <h6>Detailed Cadre Breakdown</h6>
+                                            </div>
+                                            <div className="card-body">
+                                                <div className="row">
+                                                    <div className="col-md-4">
+                                                        <p><strong>Given Cadre:</strong> {selectedRecord.given_cadre}</p>
+                                                        <p><strong>Permanent Cadre:</strong> {selectedRecord.permanent_cadre}</p>
+                                                    </div>
+                                                    <div className="col-md-4">
+                                                        <p><strong>Temporary Cadre:</strong> {selectedRecord.temporary_cadre}</p>
+                                                        <p><strong>New Heads:</strong> {selectedRecord.new_heads}</p>
+                                                    </div>
+                                                    <div className="col-md-4">
+                                                        <p><strong>Absent:</strong> {selectedRecord.absent}</p>
+                                                        <p><strong>Leave:</strong> {selectedRecord.leave}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" onClick={closeModal}>
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
