@@ -3,7 +3,7 @@ let Company = require('../models/company.model');
 
 const auth = require('../middleware/auth');
 
-router.route('/').get(auth(), (req, res) => {
+router.route('/').get(auth, (req, res) => {
   Company.find()
     .then(companies => res.json(companies))
     .catch(err => res.status(400).json('Error: ' + err));

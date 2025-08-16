@@ -4,7 +4,7 @@ const cadreController = require('../controllers/cadreRecord.controller');
 
 const auth = require('../middleware/auth');
 
-router.route('/').get(auth(), (req, res) => {
+router.route('/').get(auth, (req, res) => {
   CadreRecord.find()
     .populate('company')
     .then(records => res.json(records))
