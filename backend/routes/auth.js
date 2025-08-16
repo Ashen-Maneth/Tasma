@@ -2,6 +2,7 @@ const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 let User = require('../models/user.model');
+const auth = require('../middleware/auth');
 
 // Register a new user (for initial setup)
 router.route('/register').post(async (req, res) => {
@@ -60,6 +61,17 @@ router.route('/login').post(async (req, res) => {
             }
         );
 
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+});
+
+// Get all users (protected route)
+router.route('/').get(auth, async (req, res) => {
+    try {
+        const users = await User.find();
+        res.json(users);
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error');
