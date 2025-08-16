@@ -49,14 +49,19 @@ app.get('/healthz', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-// Optional: Serve frontend if backend serves production build
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '..', 'frontend', 'build')));
-  // Express 5 catch-all: use a more compatible pattern
-  app.get(/.*/, (req, res) => {
-    res.sendFile(path.resolve(__dirname, '..', 'frontend', 'build', 'index.html'));
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'Tasma API Server is running',
+    status: 'ok',
+    endpoints: [
+      '/auth',
+      '/companies', 
+      '/cadre-records',
+      '/healthz'
+    ]
   });
-}
+});
 
 // Start server
 app.listen(port, () => {
